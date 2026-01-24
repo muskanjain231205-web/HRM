@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payroll</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+<style>
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Inter,sans-serif;
+  background:#e0f2fe;
+}
+.box{
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  width:400px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+select,input,button{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  margin-bottom:6px;
+}
+.error-input{
+  border-color:#dc2626;
+}
+.error-text{
+  color:#dc2626;
+  font-size:12px;
+  margin-bottom:10px;
+  display:none;
+}
+button{
+  margin-top:10px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover{
+  background:#1d4ed8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>Run Payroll</h2>
+
+  <select id="payrollEmployee">
+    <option value="">Select Employee</option>
+  </select>
+  <div class="error-text" id="empError"></div>
+
+  <input id="salary" placeholder="Salary">
+  <div class="error-text" id="salaryError"></div>
+
+  <input id="bonus" placeholder="Bonus">
+  <div class="error-text" id="bonusError"></div>
+
+  <button id="pay">Generate Payroll</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+let employees = JSON.parse(localStorage.getItem("employees")) || [];
+let payrolls = JSON.parse(localStorage.getItem("payrolls")) || [];
+
+/* Populate employee dropdown */
+function populateEmployees(){
+  let options = `<option value="">Select Employee</option>`;
+  employees.forEach(emp=>{
+    options += `<option value="${emp.id}">${emp.name}</option>`;
+  });
+  $("#payrollEmployee").html(options);
+}
+populateEmployees();
+
+/* Payroll submit */
+$("#pay").on("click", function(){
+
+  let valid = true;
+  $(".error-text").hide();
+  $("input,select").removeClass("error-input");
+
+  const empId = $("#payrollEmployee").val();
+  const salaryVal = $("#salary").val().trim();
+  const bonusVal = $("#bonus").val().trim();
+
+  const salary = parseFloat(salaryVal);
+  const bonus = parseFloat(bonusVal);
+
+  if(empId === ""){
+    $("#empError").text("Please select employee").show();
+    $("#payrollEmployee").addClass("error-input");
+    valid = false;
+  }
+
+  if(salaryVal === ""){
+    $("#salaryError").text("Salary cannot be blank").show();
+    $("#salary").addClass("error-input");
+    valid = false;
+  }
+  else if(isNaN(salary) || salary <= 0){
+    $("#salaryError").text("Enter valid salary").show();
+    $("#salary").addClass("error-input");
+    valid = false;
+  }
+
+  if(bonusVal === ""){
+    $("#bonusError").text("Bonus cannot be blank").show();
+    $("#bonus").addClass("error-input");
+    valid = false;
+  }
+  else if(isNaN(bonus) || bonus < 0){
+    $("#bonusError").text("Enter valid bonus").show();
+    $("#bonus").addClass("error-input");
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  payrolls.push({
+    id: Date.now(),
+    employeeId: empId,
+    salary,
+    bonus,
+    date: new Date().toLocaleDateString()
+  });
+
+  localStorage.setItem("payrolls", JSON.stringify(payrolls));
+  $("#salary,#bonus,#payrollEmployee").val("");
+});
+
+/* Remove error while typing */
+$("input,select").on("input change", function(){
+  $(this).removeClass("error-input");
+  $(this).next(".error-text").hide();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRM Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+:root{
+  --blue-600:#2563eb;
+  --blue-500:#3b82f6;
+  --muted:#64748b;
+  --error:#dc2626;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    linear-gradient(rgba(2,6,23,.65),rgba(2,6,23,.65)),
+    url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d");
+  background-size:cover;
+  background-position:center;
+  font-family:'Inter',sans-serif;
+}
+.container{
+  width:780px;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(22px);
+  border-radius:26px;
+  overflow:hidden;
+  box-shadow:0 40px 90px rgba(0,0,0,.3);
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+}
+.left{padding:52px}
+.logo{display:flex;justify-content:center;margin-bottom:28px}
+.logo img{height:46px}
+.left h2{
+  text-align:center;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:26px;
+  font-weight:700;
+}
+.subtitle{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+}
+form{margin-top:36px}
+.field{margin-bottom:18px}
+label{
+  font-size:12px;
+  font-weight:500;
+  color:#334155;
+  margin-bottom:6px;
+  display:block;
+}
+.input-wrapper{position:relative}
+input{
+  width:100%;
+  padding:15px 45px 15px 18px;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+}
+input.error-input{border-color:var(--error)}
+input:focus{
+  outline:none;
+  border-color:var(--blue-500);
+  box-shadow:0 0 0 3px rgba(59,130,246,.25);
+}
+.eye{
+  position:absolute;
+  right:15px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+}
+.error-text{
+  color:var(--error);
+  font-size:12px;
+  margin-top:4px;
+  display:none;
+}
+button{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:40px;
+  font-size:14px;
+  font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--blue-600),var(--blue-500));
+}
+.right{
+  padding:46px;
+  background:linear-gradient(135deg,rgba(37,99,235,.9),rgba(59,130,246,.8));
+  display:flex;
+  align-items:center;
+}
+.right h1{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:30px;
+  color:#fff;
+}
+.right p{
+  margin-top:14px;
+  font-size:13.5px;
+  line-height:1.7;
+  color:rgba(255,255,255,.9);
+}
+@media(max-width:900px){
+  .container{width:92%;grid-template-columns:1fr}
+  .right{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="left">
+    <div class="logo">
+      <img src="logo.png">
+    </div>
+
+    <h2>Login</h2>
+    <p class="subtitle">Secure access to HR dashboard</p>
+
+    <form id="loginForm" novalidate>
+
+      <div class="field">
+        <label>Username</label>
+        <input id="username" placeholder="Enter username">
+        <div class="error-text" id="userError"></div>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" placeholder="Enter password">
+          <span class="eye" id="toggleEye">👁️</span>
+        </div>
+        <div class="error-text" id="passError"></div>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <div class="right">
+    <div>
+      <h1>Welcome Back</h1>
+      <p>
+        Manage employees, payroll,<br>
+        attendance & performance<br>
+        with a modern HR system.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* show / hide password */
+$("#toggleEye").click(function(){
+  const p = $("#password");
+  p.attr("type", p.attr("type")==="password" ? "text" : "password");
+});
+
+/* login validation only */
+$("#loginForm").submit(function(e){
+  e.preventDefault();
+
+  $(".error-text").hide();
+  $("input").removeClass("error-input");
+
+  const username = $("#username").val().trim();
+  const password = $("#password").val().trim();
+  let valid = true;
+
+  if(username === ""){
+    $("#userError").text("Username is required").show();
+    $("#username").addClass("error-input");
+    valid = false;
+  }
+
+  if(password === ""){
+    $("#passError").text("Password is required").show();
+    $("#password").addClass("error-input");
+    valid = false;
+  }
+  else if(password.length < 6){
+    $("#passError").text("Password must be at least 6 characters").show();
+    $("#password").addClass("error-input");
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  /* no default credentials */
+  window.location.href = "dashboard.html";
+});
+
+/* remove error while typing */
+$("input").on("input",function(){
+  $(this).removeClass("error-input");
+  $(this).closest(".field").find(".error-text").hide();
+});
+</script>
+
+</body>
+</html>

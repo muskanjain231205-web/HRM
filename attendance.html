@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family: Inter, sans-serif;
+  background:#eef2ff;
+  padding:40px;
+}
+.card{
+  max-width:400px;
+  margin:auto;
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+select,button{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  font-family:inherit;
+}
+select.error-input{
+  border-color:#dc2626;
+}
+.error-text{
+  color:#dc2626;
+  font-size:12px;
+  margin:6px 0 12px;
+  display:none;
+}
+button{
+  margin-top:10px;
+  background:#22c55e;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover{
+  background:#16a34a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Mark Attendance</h2>
+
+  <form id="attendanceForm" novalidate>
+
+    <select id="employeeSelect">
+      <option value="">Select Employee</option>
+    </select>
+    <div class="error-text" id="empError"></div>
+
+    <select id="attendanceStatus">
+      <option value="">Select Status</option>
+      <option value="present">Present</option>
+      <option value="absent">Absent</option>
+    </select>
+    <div class="error-text" id="statusError"></div>
+
+    <button type="submit">Submit Attendance</button>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+let employees  = JSON.parse(localStorage.getItem("employees")) || [];
+let attendance = JSON.parse(localStorage.getItem("attendance")) || [];
+
+/* Populate employee dropdown */
+function populateEmployees(){
+  let options = `<option value="">Select Employee</option>`;
+  employees.forEach(emp=>{
+    options += `<option value="${emp.id}">${emp.name}</option>`;
+  });
+  $("#employeeSelect").html(options);
+}
+populateEmployees();
+
+/* Submit attendance */
+$("#attendanceForm").on("submit", function(e){
+  e.preventDefault();
+
+  let valid = true;
+  $(".error-text").hide();
+  $("select").removeClass("error-input");
+
+  const empId = $("#employeeSelect").val();
+  const status = $("#attendanceStatus").val();
+
+  if(empId === ""){
+    $("#empError").text("Please select employee").show();
+    $("#employeeSelect").addClass("error-input");
+    valid = false;
+  }
+
+  if(status === ""){
+    $("#statusError").text("Please select attendance status").show();
+    $("#attendanceStatus").addClass("error-input");
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  attendance.push({
+    id: Date.now(),
+    employeeId: empId,
+    status,
+    date: new Date().toLocaleDateString()
+  });
+
+  localStorage.setItem("attendance", JSON.stringify(attendance));
+  this.reset();
+});
+
+/* Remove error on change */
+$("select").on("change", function(){
+  $(this).removeClass("error-input");
+  $(this).next(".error-text").hide();
+});
+</script>
+
+</body>
+</html>

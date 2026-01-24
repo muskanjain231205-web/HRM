@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HRM Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h2>HRM Admin</h2>
+  <nav class="menu">
+    <a data-page="dashboardPage" class="active">Dashboard</a>
+    <a data-page="addEmployeePage">Add Employee</a>
+    <a data-page="attendancePage">Attendance</a>
+    <a data-page="payrollPage">Payroll</a>
+    <a data-page="leavePage">Leave</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<section class="main">
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="page">
+  <div class="widgets">
+    <div class="widget">
+      <small>Total Employees</small>
+      <h2 id="totalEmployees">0</h2>
+    </div>
+    <div class="widget">
+      <small>Present Today</small>
+      <h2 id="presentToday">0</h2>
+    </div>
+    <div class="widget">
+      <small>Pending Leaves</small>
+      <h2 id="pendingLeaves">0</h2>
+    </div>
+    <div class="widget">
+      <small>Payroll (Month)</small>
+      <h2 id="monthlyPayroll">0</h2>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <input type="text" id="searchInput" placeholder="Search employee">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="employeeTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ADD EMPLOYEE -->
+<div id="addEmployeePage" class="page hidden">
+  <div class="card">
+    <h2>Add Employee</h2>
+    <form id="employeeForm" novalidate>
+      <input type="text" id="name" placeholder="Employee Name">
+      <input type="email" id="email" placeholder="Email">
+      <input type="text" id="department" placeholder="Department">
+
+      <select id="type">
+        <option value="">Select Type</option>
+        <option value="full-time">Full Time</option>
+        <option value="part-time">Part Time</option>
+      </select>
+
+      <button type="submit">Add Employee</button>
+    </form>
+  </div>
+</div>
+
+<!-- ATTENDANCE -->
+<div id="attendancePage" class="page hidden">
+  <div class="card">
+    <h2>Mark Attendance</h2>
+    <form id="attendanceForm" novalidate>
+
+      <select id="employeeSelect">
+        <option value="">Select Employee</option>
+      </select>
+
+      <select id="attendanceStatus">
+        <option value="">Select Status</option>
+        <option value="present">Present</option>
+        <option value="absent">Absent</option>
+      </select>
+
+      <button type="submit">Submit Attendance</button>
+    </form>
+  </div>
+</div>
+
+<!-- PAYROLL -->
+<div id="payrollPage" class="page hidden">
+  <div class="card">
+    <h2>Run Payroll</h2>
+    <form id="payrollForm" novalidate>
+
+      <select id="payrollEmployee">
+        <option value="">Select Employee</option>
+      </select>
+
+      <input type="month" id="payrollMonth">
+
+      <button type="submit">Process Payroll</button>
+    </form>
+  </div>
+</div>
+
+<!-- LEAVE -->
+<div id="leavePage" class="page hidden">
+  <div class="card">
+    <h2>Apply Leave</h2>
+    <form id="leaveForm" novalidate>
+
+      <select id="leaveEmployee">
+        <option value="">Select Employee</option>
+      </select>
+
+      <select id="leaveType">
+        <option value="">Select Leave Type</option>
+        <option value="sick">Sick Leave</option>
+        <option value="casual">Casual Leave</option>
+      </select>
+
+      <textarea id="leaveReason" placeholder="Reason"></textarea>
+
+      <button type="submit">Submit Leave</button>
+    </form>
+  </div>
+</div>
+
+</section>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
